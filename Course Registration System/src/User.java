@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * The parent class of the Admin and Student classes covers basic functionality such as logging in, viewing courses, and exiting the program.
@@ -6,6 +7,8 @@ import java.util.ArrayList;
  * @version 0.1
  */
 public abstract class User {
+	
+	// private static final long seritalVersionUID = 1L;
 	private String username;
 	private String password;
 	private String firstName;
@@ -127,5 +130,5 @@ public abstract class User {
 	/**
 	 * Tells the program to display the options menu for a user. Options differ based on whether the user is an administrator or a student
 	 */
-	public abstract String options();
+	public abstract int options(Scanner scn);
 }

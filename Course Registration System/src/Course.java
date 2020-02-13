@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Course {
+public class Course implements Comparable<Course> {
 	private String name;
 	private String id;
 	private int capacity;
@@ -95,11 +95,24 @@ public class Course {
 	 * @return A print statement containing information about the course.
 	 */
 	public String toString() {
-		String toPrint = "Course Name: %s\nCourse ID: %s\n"
+		String toPrint = String.format("Course Name: %s\nCourse ID: %s\n"
 				+ "Course Capacity: %s\nCurrent Number of Students: %s\n"
 				+ "Student Names: %s\nInstructor: %s\nSection Number: %s"
-				+ "\nLocation: %s".format(this.name, this.id, Integer.toString(this.capacity), Integer.toString(this.numStudents),
+				+ "\nLocation: %s", this.name, this.id, Integer.toString(this.capacity), Integer.toString(this.numStudents),
 						this.studentNames.toString(), this.instructor, Integer.toString(this.section), this.loc);		
 		return toPrint;
+	}
+	
+	/**
+	 * Compares courses by number of registered students
+	 * @param course The course to compare
+	 * @return 1 if the method-calling course has more students, -1 if less, 0 if equal.
+	 */
+	public int compareTo(Course course) {
+		if (this.getNumStudents() > course.getNumStudents()) {
+			return 1;
+		} else if (this.getNumStudents() < course.getNumStudents()) {
+			return -1;
+		} return 0;
 	}
 }

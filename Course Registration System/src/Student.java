@@ -74,7 +74,7 @@ public class Student extends User implements StudentInterface {
 		}
 	}
 	
-	public String options() {
+	public String options(String selection) {
 		Scanner scn = new Scanner(System.in);
 		System.out.println("Welcome, " + this.getFullName() + ". Please enter the number of the option you wish to select: \n"
 				+ "1) View all courses \n"

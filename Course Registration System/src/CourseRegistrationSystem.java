@@ -27,7 +27,7 @@ public class CourseRegistrationSystem {
 				String[] lineSplit = line.split(",");
 				Course course = new Course(lineSplit[0], lineSplit[1],
 						Integer.parseInt(lineSplit[2]), Integer.parseInt(lineSplit[3]), 
-						null, lineSplit[5], Integer.parseInt(lineSplit[6]), lineSplit[7]);
+						new ArrayList<String>(), lineSplit[5], Integer.parseInt(lineSplit[6]), lineSplit[7]);
 				courses.add(course);
 			} else {
 				cont = false;
@@ -48,24 +48,36 @@ public class CourseRegistrationSystem {
 		String username = scn.nextLine();
 		System.out.println("Please enter your password: ");
 		String password = scn.nextLine();
-		
-		// Checking for a student/admin with those credentials
-		if (username.equals("Admin") && password.equals("Admin001")) {
-			admin.options();
-		} else {
-			for (Student student : students) {
-				if (student.getUsername().equals(username) && student.getPassword().equals(password)) {
-					student.options();
-				} else {
-					System.out.println("Oops! We could not find a user with those credentials.");
+		// if admin user
+		if (username.equals(admin.getUsername()) && password.equals(admin.getPassword())) {
+			boolean running = true;
+			while(running) {
+				// get their command
+				int option = admin.options(scn);
+				switch(option) {
+					// Create a course
+					case 1:
+						admin.createCourse(courses, scn);
+						break;
+					// Delete a course
+					case 2:
+						admin.deleteCourse(courses, scn);
+						break;
+					// Edit a course
+					case 3:
+						admin.editCourseInfo(courses, scn);	
+						break;
+					// Display course info
+					case 4:
+						System.out.println("Please enter the ID of the course you wish to display");
+						String displayId = scn.next();
+						for (Course course : courses) {
+							if (course.getID().equals(displayId)) {
+								System.out.println(course);
+							}
+						}
 				}
 			}
 		}
-		
-		//
-		// Processing and executing the user's command
-		//
-		
-		admin.options();
 	}
 }

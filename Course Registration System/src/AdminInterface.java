@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * An interface implemented by the Admin class, which lays out most of the functionality of the Administrator within the Course Registration System
@@ -8,26 +9,23 @@ import java.util.ArrayList;
  */
 public interface AdminInterface {
 	/**
-	 * Creates a new Course object, which represents a section of a course.
-	 * @param name The name of the course in plain English
-	 * @param id The name of the class within the school's identification system
-	 * @param capacity The number of students who can be enrolled in the class at one time
-	 * @param numStudents The number of students currently enrolled in the class
-	 * @param studentNames A list of full names of students currently enrolled in the class
-	 * @param instructor The full name of the course's instructor
-	 * @param section The section number of this section of the course
-	 * @param loc The location of the class
-	 * @return The created course
+	 * Asks the user for input and then creates a course and appends it to the list of courses.
+	 * @param courses The list of the courses to which the new course should be appended.
+	 * @param scn The Scanner from which input should be gathered.
 	 */
-	public Course createCourse(String name, String id, int capacity, int numStudents, ArrayList<String> studentNames, String instructor,
-			int section, String loc);
+	public void createCourse(ArrayList<Course> courses, Scanner scn);
 	/**
-	 * Deletes a course from the given course list, provided a course id.
-	 * @param courses A list of courses from which the selected course should be removed
-	 * @param id The ID of the course to be removed
-	 * @return The list of courses sans the removed course
+	 * Asks the user for a course id and section number and then removes it from the given list of courses.
+	 * @param courses A list of courses from which the selected course should be removed.
+	 * @param scn The Scanner from which input should be gathered.
 	 */
-	public ArrayList<Course> deleteCourse(ArrayList<Course> courses, String id);
+	public void deleteCourse(ArrayList<Course> courses, Scanner scn);
+	/**
+	 * Asks the user for input and then calls the appropriate function to edit a course.
+	 * @param courses The list of courses that contains the course to be edited.
+	 * @param scn The Scanner from which input should be gathered.
+	 */
+	public void editCourseInfo(ArrayList<Course> courses, Scanner scn);
 	/**
 	 * Takes a course, Integer field to be changed, and a value, and edits the course's selected attribute
 	 * @param course The course to be edited
