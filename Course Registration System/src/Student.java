@@ -1,9 +1,16 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Student extends User implements StudentInterface {
-	
+/**
+ * A child of the User class which implements the StudentInterface interface. A user with the ability to register for, withdraw from, and view courses.
+ * Refer to StudentInterface.java and User.java for documentation of implemented methods.
+ * @author Sivan Cooperman
+ * @version 1.0
+ */
+public class Student extends User implements StudentInterface, java.io.Serializable {
+	private static final long serialVersionUID = -3938274226533774976L;
 	private String fullname;
+	private ArrayList<Course> registered;
 	
 	/**
 	 * Instantiate a Student object with a username, password, first name, and last name
@@ -13,85 +20,108 @@ public class Student extends User implements StudentInterface {
 	 * @param lastname
 	 */
 	public Student(String username, String password, String firstname, String lastname) {
+		// Call User constructor
 		super(username, password, firstname, lastname);
 		this.setFullName(this.getFirstName() + " " + this.getLastName());
+		this.registered = new ArrayList<Course>();
 	}
 	
+	// Full name getter and setter
 	public String getFullName() {
-		return fullname;
+		return this.fullname;
 	}
-
 	public void setFullName(String fullname) {
 		this.fullname = fullname;
 	}
+	
+	// Registered courses getter and setter
+	public ArrayList<Course> getRegistered() {
+		return this.registered;
+	}
+	public void setRegistered(ArrayList<Course> registered) {
+		this.registered = registered;
+	}
 
-	/**
-	 * Checks whether a student is in a course
-	 * @param A Course object
-	 * @return True if the student is in the course, false if not
-	 */
 	public boolean inCourse(Course course) {
-		String fullname = this.getFirstName() + this.getLastName();
-		if (course.getStudentNames().contains(fullname)) return true;
+		if (course.getStudentNames().contains(this.getFullName())) return true;
 		return false;
 	}
 	
-	/**
-	 * Views all courses that the user is not currently in and that are not full
-	 * @param A list of courses to check
-	 * @return A list of available courses
-	 */
 	public ArrayList<Course> viewAvailableCourses(ArrayList<Course> courses) {
 		ArrayList<Course> availableCourses = new ArrayList<Course>();
 		for (Course course : courses) {
-			if (!this.inCourse(course) && (course.getCapacity() != course.getNumStudents())) {
+			if (!this.inCourse(course) && (course.getCapacity() != course.getNumStudents())) { // If the student is not currently enrolled and the course isn't full
 				availableCourses.add(course);
 			}
 		} return availableCourses;
 	}
 	
-	/**
-	 * Registers a student for a course by adding their name to the list of students and increasing the number of students by one
-	 * @param course The course to be registered for
-	 */
-	public void register(Course course) {
-		if (course.getNumStudents() != course.getCapacity()) {
-			course.getStudentNames().add(this.getFirstName() + " " + this.getLastName());
-			course.setNumStudents(course.getNumStudents() + 1);
-		}
+	public void register(ArrayList<Course> courses, Scanner scn) {
+		System.out.println("Please enter the name of the course you wish to register for: ");
+		String name = scn.nextLine();
+		System.out.println("Please enter the section number of the course you wish to register for: ");
+		int section = Data.assertInt(scn.nextLine(), scn);
+		
+		ArrayList<Course> sections = Data.findCourseByName(name, courses);
+		sections.removeIf(c -> (c.getSection() != section));
+		boolean courseFound  = sections.size() == 0 ? false : true; // Course not found if there are no sections left over from the removeIf()
+		if (courseFound) {
+			Course course = sections.get(0);
+			if (course.getStudentNames().contains(this.getFullName()))
+				System.out.println("Oops! You are already enrolled in this course. Please try again.\n");
+			else if (course.getNumStudents() < course.getCapacity()) { // If there's enough room
+				course.getStudentNames().add(this.getFullName());
+				course.setNumStudents(course.getNumStudents() + 1);
+				this.getRegistered().add(course);
+			} else
+				System.out.println("Oops! This course is full. Please try again.\n");
+		} else
+			System.out.println("Oops! We couldn't find that course. Please try again.\n");
 	}
 	
-	/**
-	 * Withdraws a student from the course by removing their name from the roster and decrementing the student count. Prints an error message if the user was not in the course
-	 * @param course The course from which to be withdrawn
-	 */
-	public void withdraw(Course course) {
-		if (this.inCourse(course)) {
+	public void withdraw(ArrayList<Course> courses, Scanner scn) {
+		System.out.println("Please enter the name of the course you wish to withdraw from: ");
+		String name = scn.nextLine();
+		
+		ArrayList<Course> sections = Data.findCourseByName(name, courses);
+		Course course = null;
+		for (Course section : sections) {
+			for (String studentName : section.getStudentNames()) {
+				if (this.getFullName().equals(studentName)) {
+					course = section;
+				} else {
+					System.out.println("Oops! Looks like you weren't in this course in the first place. Please try again.\n");
+					return;
+				}
+			} 
 			course.getStudentNames().remove(this.getFullName());
 			course.setNumStudents(course.getNumStudents() - 1);
-		} else {
-			System.out.println("Oops! Looks like you weren't in this course in the first place.");
+			ArrayList<Course> registered = this.getRegistered();
+			registered.remove(course);
+			this.setRegistered(registered);
 		}
 	}
 	
-	public String options(String selection) {
-		Scanner scn = new Scanner(System.in);
-		System.out.println("Welcome, " + this.getFullName() + ". Please enter the number of the option you wish to select: \n"
-				+ "1) View all courses \n"
-				+ "2) View all courses that are not full \n"
-				+ "3) Register in a course \n"
-				+ "4) Withdraw from a course \n"
-				+ "5) View all courses you are registered for \n"
-				+ "6) Exit");
-		String selection = scn.nextLine();
-		if ("123456".contains(selection)) {
-			scn.close();
-			return selection;
-		} else {
-			System.out.println("Invalid selection. Restarting...");
-			this.options();
-		} 
-		scn.close();
-		return null;
+	public ArrayList<Course> getAvailableCourses(ArrayList<Course> courses) {
+		ArrayList<Course> availableCourses = (ArrayList<Course>) courses.clone();
+		availableCourses.removeIf(course -> (course.getCapacity() == course.getNumStudents()));
+		return availableCourses;
+	}
+	
+	/**
+	 * Prints to the console a list of options the student user can execute based on the user's input.
+	 * @param scn A Scanner object for user input.
+	 * @return The selection made by the user.
+	 */
+	public int[] options(Scanner scn) {
+		System.out.println("1) View all courses\n"
+				+ "2) View all courses that are not full\n"
+				+ "3) Register for a course\n"
+				+ "4) Withdraw from a course\n"
+				+ "5) View all currently registered courses\n"
+				+ "6) Exit \n"
+				+ "\nPlease enter the number that corresponds to the command you wish to perform: \n");
+		int selection = Data.assertInt(scn.nextLine(), scn);
+		return new int[] {selection};
 	}
 }

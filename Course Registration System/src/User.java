@@ -1,38 +1,22 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
  * The parent class of the Admin and Student classes covers basic functionality such as logging in, viewing courses, and exiting the program.
  * @author Sivan Cooperman
- * @version 0.1
+ * @version 1.0
  */
-public abstract class User {
-	
-	// private static final long seritalVersionUID = 1L;
-	private String username;
-	private String password;
-	private String firstName;
-	private String lastName;
-	private boolean exitBool = false;
-	
-	/**
-	 * Instantiates a user without a first or last name (for use when creating admin users)
-	 * @param username The user's username
-	 * @param password The user's password
-	 * @param firstName The user's first name
-	 * @param lastName The user's surname
-	 */
-	public User(String username, String password, String firstname, String lastname) {
-		this.setUsername(username);
-		this.setPassword(password);
-		this.setFirstName(firstname);
-		this.setLastName(lastname);
-	}
+public abstract class User implements java.io.Serializable {
+
+	private static final long serialVersionUID = 3292649860699175832L; // Unique ID for serialization
+	private String username; // The user's unique username
+	private String password; // The user's password
+	private String firstname; // The user's (student's) first name
+	private String lastname; // The user's (student's) last name
 	
 	/**
-	 * Instantiates a user without a first or last name (for use when creating admin users)
-	 * @param username The admin username
-	 * @param password The admin password
+	 * Instantiates a User child (likely an Admin) with a username and a password.
+	 * @param username A unique username.
+	 * @param password A password.
 	 */
 	public User(String username, String password) {
 		this.setUsername(username);
@@ -40,95 +24,54 @@ public abstract class User {
 	}
 	
 	/**
-	 * Checks whether a student's username is unique among a list of students
-	 * @param username The student's username
-	 * @param students A list of students within which the student's username should be unique
-	 * @return Whether or not the student's username is unique
+	 * Instantiates a User child (likely a Student) with a username, password, and first and last name.
+	 * @param username A unique username.
+	 * @param password A password.
+	 * @param firstname A first name.
+	 * @param lastname A last name.
 	 */
-	public static boolean isUniqueUsername(String username, ArrayList<Student> students) {
-		for (Student student : students) {
-			if (username.equals(student.getUsername())) {
-					return false;
-			}
-		} return true;
+	public User(String username, String password, String firstname, String lastname) {
+		this(username, password);
+		this.setFirstName(firstname);
+		this.setLastName(lastname);
 	}
 	
+	// Username getter and setter
 	public String getUsername() {
 		return username;
 	}
-
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
+	
+	// Password getter and setter
 	public String getPassword() {
 		return password;
 	}
-
-	private void setPassword(String password) {
+	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	
+	// First name getter and setter
 	public String getFirstName() {
-		return firstName;
+		return firstname;
 	}
-
 	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+		this.firstname = firstName;
 	}
 
+	// Last name getter and setter
 	public String getLastName() {
-		return lastName;
+		return lastname;
 	}
-
 	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public boolean isExitBool() {
-		return exitBool;
-	}
-
-	public void setExitBool(boolean exitBool) {
-		this.exitBool = exitBool;
-	}
-
-	/**
-	 * Takes a list of courses and assembles a print statement containing their relevant information
-	 * @param courses A list of courses
-	 * @return A print statement containing relevant information about each course
-	 */
-	public String viewCourses(ArrayList<Course> courses) {
-		String toPrint = "";
-		for (Course course : courses) {
-			toPrint += course.toString();
-		} return toPrint;
+		this.lastname = lastName;
 	}
 	
 	/**
-	 * View all courses that a student has registered for
-	 * @param courses An ArrayList of courses to check a student's registration in
-	 * @param firstname The student's first name
-	 * @param lastname The student's last name
+	 * Tells the program to display the options menu for a user. Options differ based on whether the user is an administrator or a student.
+	 * @param scn A Scanner object for user input.
+	 * @return The choice(s) the user has selected.
 	 */
-	public ArrayList<Course> viewRegisteredCourses(ArrayList<Course> courses, String firstname, String lastname) {
-		ArrayList<Course> registeredCourses = new ArrayList<Course>();
-		for (Course course : courses) {
-			for (String name : course.getStudentNames()) {
-				if ((firstname + " " + lastname).equals(name)) {
-					registeredCourses.add(course);
-				}
-			}
-		} return registeredCourses;
-	}
-	
-	/**
-	 * Tells the program to exit
-	 */
-	public void exit() {this.exitBool = true;}
-	
-	/**
-	 * Tells the program to display the options menu for a user. Options differ based on whether the user is an administrator or a student
-	 */
-	public abstract int options(Scanner scn);
+	public abstract int[] options(Scanner scn);
 }

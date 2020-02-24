@@ -9,77 +9,104 @@ import java.util.Scanner;
  */
 public interface AdminInterface {
 	/**
-	 * Asks the user for input and then creates a course and appends it to the list of courses.
-	 * @param courses The list of the courses to which the new course should be appended.
-	 * @param scn The Scanner from which input should be gathered.
+	 * Finds a student a list of students.
+	 * @param username A String containing the student's username.
+	 * @param students An ArrayList of Students.
+	 * @return A Student object whose username matches the given username.
+	 */
+	public Student findStudent(String username, ArrayList<Student> students);
+	
+	/**
+	 * Asks the user for a course id and displays information about that course.
+	 * @param courses An ArrayList of Courses.
+	 * @param scn A Scanner object for user input.
+	 */
+	public void displayCourse(ArrayList<Course> courses, Scanner scn);
+	
+	/**
+	 * Asks the user for input and then creates a course and appends it to a list of courses.
+	 * @param courses An ArrayList of Courses.
+	 * @param scn A Scanner object for user input.
 	 */
 	public void createCourse(ArrayList<Course> courses, Scanner scn);
+	
 	/**
-	 * Asks the user for a course id and section number and then removes it from the given list of courses.
-	 * @param courses A list of courses from which the selected course should be removed.
-	 * @param scn The Scanner from which input should be gathered.
+	 * Asks the user for a course id and section number and then removes it from a list of courses.
+	 * @param courses An ArrayList of Courses.
+	 * @param scn A Scanner object for user input.
 	 */
 	public void deleteCourse(ArrayList<Course> courses, Scanner scn);
+	
 	/**
 	 * Asks the user for input and then calls the appropriate function to edit a course.
-	 * @param courses The list of courses that contains the course to be edited.
-	 * @param scn The Scanner from which input should be gathered.
+	 * @param courses An ArrayList of Courses.
+	 * @param scn A Scanner object for user input.
 	 */
 	public void editCourseInfo(ArrayList<Course> courses, Scanner scn);
+	
 	/**
-	 * Takes a course, Integer field to be changed, and a value, and edits the course's selected attribute
-	 * @param course The course to be edited
-	 * @param field The field to be edited ("capacity", "numStudents", or "section")
-	 * @param value The new value of the field
-	 * @return The edited course
+	 * Edits one of a course's integer attributes.
+	 * @param course A Course object.
+	 * @param field A String field to be edited ("capacity", "numStudents", or "section").
+	 * @param value The new Integer value of the field.
+	 * @return The edited course.
 	 */
 	public Course editCourse(Course course, String field, int value);
+	
 	/**
-	 * Takes a course, String field to be changed, and a value, and edits the course's selected attribute
-	 * @param course The course to be edited
-	 * @param field The field to be edited ("instructor" or "location")
-	 * @param value The new value of the field
-	 * @return The edited course
+	 * Edits one of a course's string attributes.
+	 * @param course A Course object.
+	 * @param field A String field to be edited ("instructor" or "location").
+	 * @param value The new String value of the field.
+	 * @return The edited course.
 	 */
 	public Course editCourse(Course course, String field, String value);
+	
 	/**
-	 * Takes a course, ArrayList<String> field to be changed, and a value, and edits the course's selected attribute
-	 * @param course The course to be edited
-	 * @param field The field to be edited ("student names")
-	 * @param value The new value of the field
-	 * @return The edited course
+	 * Edits one of a course's string array attributes.
+	 * @param course A course object.
+	 * @param field A String[] field to be edited ("student names").
+	 * @param value The new String[] value of the field.
+	 * @return The edited course.
 	 */
 	public Course editCourse(Course course, String field, ArrayList<String> value);
+	
 	/**
-	 * Takes an ArrayList of Students and adds a new Student object to it
-	 * @param studentList An ArrayList of Students to which the new Student should be added
-	 * @param student The Student object to be added
-	 * @return The updated Student list
+	 * Adds a new student to a list of students.
+	 * @param studentList An ArrayList of Students
+	 * @param student A Student object.
 	 */
-	public ArrayList<Student> registerStudent(ArrayList<Student> studentList, Student student);
+	public void registerStudent(ArrayList<Student> studentList, Scanner scn);
+	
 	/**
-	 * Returns a list of all Courses for which the capacity attribute is equal to the numStudents attribute (i.e. The class is full)
-	 * @param courses The list of courses to be iterated through
+	 * Returns a list of all Courses for which the capacity attribute is equal to the numStudents attribute (i.e. The class is full).
+	 * @param courses An ArrayList of Courses.
 	 * @return An ArrayList of full courses
 	 */
 	public ArrayList<Course> getFullCourses(ArrayList<Course> courses);
+	
 	/**
-	 * Takes a list of courses and a file path, and writes all full courses to the file
+	 * Asks the user for a file path, then writes all full courses from a list of courses to said file. If the file does not exist, it will be created. 
+	 * If the path is not given, the file will be written in the local directory.
 	 * @param courses A list of courses
-	 * @param filepath The file path (including the file) to which the full courses should be written
+	 * @param scn The Scanner the file path is gathered from
 	 */
-	public void writeFullCourses(ArrayList<Course> courses, String filepath) throws IOException;
+	public void writeFullCourses(ArrayList<Course> courses, Scanner scn) throws IOException;
+	
 	/**
-	 * Takes a course and a list of students, and returns a list of all Student enrolled in the given course
-	 * @param course The course to be checked for
-	 * @param students A list of Students
-	 * @return A list of Students who have enrolled in the given course
+	 * Displays all students registered for a course.
+	 * @param courses An ArrayList of Courses.
+	 * @param students An ArrayList of Students.
+	 * @param scn A Scanner object for user input.
+	 * @return A list of Students who have registered for the given course.
 	 */
-	public ArrayList<Student> viewRegisteredStudents(Course course, ArrayList<Student> students);
+	public ArrayList<Student> viewRegisteredStudents(ArrayList<Course> courses, ArrayList<Student> students, Scanner scn);
+	
 	/**
-	 * Sorts a list of courses by the number of students registered, from most to fewest
-	 * @param courses A list of courses
-	 * @return The sorted ArrayList of courses
+	 * Displays all courses a student is registered for.
+	 * @param students An ArrayList of Students.
+	 * @param scn A Scanner object for user input.
+	 * @return An ArrayList of Courses.
 	 */
-	public ArrayList<Course> sortCourses(ArrayList<Course> courses);
+	public ArrayList<Course> viewRegisteredCourses(ArrayList<Student> students, Scanner scn);	
 }
