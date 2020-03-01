@@ -84,6 +84,9 @@ public class Student extends User implements StudentInterface, java.io.Serializa
 		String name = scn.nextLine();
 		
 		ArrayList<Course> sections = Data.findCourseByName(name, courses);
+		if (sections.size() == 0) {
+			System.out.println("Oops! We couldn't find that course. Please try again.\n");
+		}
 		Course course = null;
 		for (Course section : sections) {
 			for (String studentName : section.getStudentNames()) {
